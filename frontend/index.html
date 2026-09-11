@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Expense & Financial Risk Analyzer</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+    <div class="container">
+
+        <h1>Smart Expense & Financial Risk Analyzer</h1>
+
+        <p>
+            Analyze your financial health and understand your risk level.
+        </p>
+
+
+        <form id="financialForm">
+
+            <label for="income">
+                Monthly Income
+            </label>
+
+            <input
+                type="number"
+                id="income"
+                placeholder="Enter your monthly income"
+                required
+            >
+
+
+            <label for="expenses">
+                Monthly Expenses
+            </label>
+
+            <input
+                type="number"
+                id="expenses"
+                placeholder="Enter your monthly expenses"
+                required
+            >
+
+
+            <label for="savings">
+                Monthly Savings
+            </label>
+
+            <input
+                type="number"
+                id="savings"
+                placeholder="Enter your monthly savings"
+                required
+            >
+
+
+            <label for="debt">
+                Monthly Debt Payment
+            </label>
+
+            <input
+                type="number"
+                id="debt"
+                placeholder="Enter your monthly debt payment"
+                required
+            >
+
+
+            <button type="submit">
+                Analyze Financial Risk
+            </button>
+
+        </form>
+
+
+        <div id="result"></div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
