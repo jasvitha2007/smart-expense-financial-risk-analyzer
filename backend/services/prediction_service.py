@@ -1,93 +1,319 @@
-def calculate_risk(income, expenses, savings, debt):
+import sys
+import os
+import time
 
-    if income <= 0:
-        return {
-            "risk": "High",
-            "risk_score": 100,
-            "recommendations": [
-                "Please enter a valid income."
+# Get the main project folder
+PROJECT_ROOT = os.path.dirname(
+    os.path.dirname(
+        os.path.dirname(
+            os.path.abspath(__file__)
+        )
+    )
+)
+
+# Add project folder to Python path
+sys.path.append(PROJECT_ROOT)
+
+# Import Member 1's ML functions
+from src.data_processing import load_data
+from src.financial_analysis import analyze_finances
+from src.anomaly_detection import detect_anomalies
+from src.prediction import predict_expenses
+from src.financial_health import calculate_financial_health
+
+
+def analyze_csv(file_path):
+
+    # Start timer
+    start_time = time.time()
+
+    # --------------------------------
+    # 1. LOAD AND CLEAN DATA
+    # --------------------------------
+
+    df = load_data(file_path)
+
+
+    # --------------------------------
+    # 2. FINANCIAL ANALYSIS
+    # --------------------------------
+
+    financial_data = analyze_finances(df)
+
+
+    # --------------------------------
+    # 3. GET EXPENSE TRANSACTIONS
+    # --------------------------------
+
+    expense_df = df[
+        df["Type"].str.lower() == "expense"
+    ].copy()
+
+
+    # --------------------------------
+    # 4. ANOMALY DETECTION
+    # --------------------------------
+
+    expense_df, anomalies = detect_anomalies(
+        expense_df
+    )
+
+
+    # --------------------------------
+    # 5. EXPENSE PREDICTION
+    # --------------------------------
+
+    (
+        test_results,
+        model_comparison,
+        best_model_name,
+        next_month_prediction
+    ) = predict_expenses(
+        expense_df
+    )
+
+
+    # --------------------------------
+    # 6. ANOMALY RATE
+    # --------------------------------
+
+    total_expenses = len(expense_df)
+
+    if total_expenses > 0:
+
+        anomaly_rate = (
+            len(anomalies)
+            / total_expenses
+        ) * 100
+
+    else:
+
+        anomaly_rate = 0
+
+
+    # --------------------------------
+    # 7. FINANCIAL HEALTH
+    # --------------------------------
+
+    health_data = calculate_financial_health(
+
+        financial_data["total_income"],
+
+        financial_data["total_expense"],
+
+        financial_data["savings_rate"],
+
+        anomaly_rate
+
+    )
+
+
+    # --------------------------------
+    # 8. CATEGORY EXPENSES
+    # --------------------------------
+
+    category_expenses = {
+
+        str(category): float(amount)
+
+        for category, amount
+        in financial_data[
+            "category_expenses"
+        ].items()
+
+    }
+
+
+    # --------------------------------
+    # 9. MONTHLY EXPENSE TREND
+    # --------------------------------
+
+    monthly_expenses = (
+
+        expense_df
+
+        .groupby(
+            [
+                "Year",
+                "Month",
+                "Month_Name"
             ]
+        )["Amount"]
+
+        .sum()
+
+        .reset_index()
+
+        .sort_values(
+            [
+                "Year",
+                "Month"
+            ]
+        )
+
+    )
+
+
+    monthly_expenses_data = [
+
+        {
+            "month":
+                f"{row['Month_Name']} "
+                f"{int(row['Year'])}",
+
+            "amount":
+                float(row["Amount"])
+
         }
 
-    expense_ratio = expenses / income
-    debt_ratio = debt / income
+        for _, row
+        in monthly_expenses.iterrows()
 
-    score = 0
-    recommendations = []
+    ]
 
 
-    # Check expenses
-    if expense_ratio > 0.8:
-        score += 50
-        recommendations.append(
-            "Your expenses are very high compared to your income."
+    # --------------------------------
+    # 10. ANOMALY TRANSACTIONS
+    # --------------------------------
+
+    anomalies_data = anomalies[
+        [
+            "Date",
+            "Transaction Description",
+            "Category",
+            "Amount"
+        ]
+    ].copy()
+
+
+    anomalies_data["Date"] = (
+
+        anomalies_data["Date"]
+
+        .dt.strftime("%Y-%m-%d")
+
+    )
+
+
+    anomalies_data = (
+
+        anomalies_data
+
+        .to_dict(
+            orient="records"
         )
 
-    elif expense_ratio > 0.5:
-        score += 30
-        recommendations.append(
-            "Try to reduce unnecessary monthly expenses."
+    )
+
+
+    # --------------------------------
+    # 11. MODEL COMPARISON
+    # --------------------------------
+
+    model_results = (
+
+        model_comparison
+
+        .replace({
+            float("nan"): None
+        })
+
+        .to_dict(
+            orient="records"
         )
 
-    else:
-        score += 10
+    )
 
 
-    # Check debt
-    if debt_ratio > 0.5:
-        score += 40
-        recommendations.append(
-            "Your debt payment is high compared to your income."
-        )
+    # --------------------------------
+    # 12. PRINT PROCESSING TIME
+    # --------------------------------
 
-    elif debt_ratio > 0.3:
-        score += 20
-        recommendations.append(
-            "Consider reducing your debt burden."
-        )
+    processing_time = (
+        time.time() - start_time
+    )
 
-    else:
-        score += 10
+    print(
+        f"Analysis completed in "
+        f"{processing_time:.2f} seconds"
+    )
 
 
-    # Check savings
-    if savings < income * 0.1:
-        score += 10
-        recommendations.append(
-            "Try to increase your monthly savings."
-        )
-
-
-    # Decide risk level
-    if score >= 70:
-        risk = "High"
-
-    elif score >= 40:
-        risk = "Medium"
-
-    else:
-        risk = "Low"
-
-
-    # General recommendation
-    if risk == "Low":
-        recommendations.append(
-            "Your financial situation looks relatively healthy. Continue maintaining good saving habits."
-        )
-
-    elif risk == "Medium":
-        recommendations.append(
-            "Review your expenses and savings regularly to improve your financial health."
-        )
-
-    else:
-        recommendations.append(
-            "Create a budget and prioritize reducing expenses and debt."
-        )
-
+    # --------------------------------
+    # 13. SEND RESULT TO FRONTEND
+    # --------------------------------
 
     return {
-        "risk": risk,
-        "risk_score": score,
-        "recommendations": recommendations
+
+        "financial_summary": {
+
+            "total_income":
+                float(
+                    financial_data[
+                        "total_income"
+                    ]
+                ),
+
+            "total_expense":
+                float(
+                    financial_data[
+                        "total_expense"
+                    ]
+                ),
+
+            "total_savings":
+                float(
+                    financial_data[
+                        "total_savings"
+                    ]
+                ),
+
+            "expense_ratio":
+                float(
+                    financial_data[
+                        "expense_ratio"
+                    ]
+                ),
+
+            "savings_rate":
+                float(
+                    financial_data[
+                        "savings_rate"
+                    ]
+                )
+
+        },
+
+
+        "category_expenses":
+            category_expenses,
+
+
+        "monthly_expenses":
+            monthly_expenses_data,
+
+
+        "anomalies":
+            anomalies_data,
+
+
+        "prediction": {
+
+            "next_month_expense":
+                float(
+                    next_month_prediction
+                ),
+
+            "best_model":
+                best_model_name,
+
+            "model_comparison":
+                model_results
+
+        },
+
+
+        "financial_health":
+            health_data
+
     }

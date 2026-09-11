@@ -1,27 +1,44 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
+import os
+import tempfile
 
-from services.prediction_service import calculate_risk
+from fastapi import APIRouter, UploadFile, File
+
+from services.prediction_service import analyze_csv
 
 
 router = APIRouter()
 
 
-class FinancialData(BaseModel):
-    income: float
-    expenses: float
-    savings: float
-    debt: float
-
-
 @router.post("/predict")
-def predict(data: FinancialData):
+async def predict(file: UploadFile = File(...)):
 
-    result = calculate_risk(
-        data.income,
-        data.expenses,
-        data.savings,
-        data.debt
+    # Create temporary file OUTSIDE the project folder
+    temp_file = tempfile.NamedTemporaryFile(
+        delete=False,
+        suffix=".csv"
     )
 
-    return result
+    try:
+
+        # Save uploaded CSV
+        contents = await file.read()
+
+        temp_file.write(contents)
+        temp_file.close()
+
+        # Run ML analysis
+        result = analyze_csv(
+            temp_file.name
+        )
+
+        return result
+
+    finally:
+
+        # Delete temporary CSV
+        if os.path.exists(
+            temp_file.name
+        ):
+            os.remove(
+                temp_file.name
+            )

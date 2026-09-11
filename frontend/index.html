@@ -2,89 +2,225 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Smart Expense & Financial Risk Analyzer</title>
 
     <link rel="stylesheet" href="style.css">
-
 </head>
-
 
 <body>
 
-    <div class="container">
-
-        <h1>Smart Expense & Financial Risk Analyzer</h1>
-
-        <p>
-            Analyze your financial health and understand your risk level.
-        </p>
-
-
-        <form id="financialForm">
-
-            <label for="income">
-                Monthly Income
-            </label>
-
-            <input
-                type="number"
-                id="income"
-                placeholder="Enter your monthly income"
-                required
-            >
+    <!-- HEADER -->
+    <header class="header">
+        <div>
+            <h1>💰 Smart Expense & Financial Risk Analyzer</h1>
+            <p>Understand your spending, predict future expenses, and monitor your financial health.</p>
+        </div>
+    </header>
 
 
-            <label for="expenses">
-                Monthly Expenses
-            </label>
+    <main class="container">
 
-            <input
-                type="number"
-                id="expenses"
-                placeholder="Enter your monthly expenses"
-                required
-            >
+        <!-- CSV UPLOAD -->
+        <section class="upload-section">
 
+            <h2>📂 Upload Financial Data</h2>
 
-            <label for="savings">
-                Monthly Savings
-            </label>
+            <p>
+                Upload your personal finance CSV file to analyze your financial health.
+            </p>
 
-            <input
-                type="number"
-                id="savings"
-                placeholder="Enter your monthly savings"
-                required
-            >
+            <div class="upload-box">
 
+                <input
+                    type="file"
+                    id="csvFile"
+                    accept=".csv"
+                >
 
-            <label for="debt">
-                Monthly Debt Payment
-            </label>
+                
+<button type="button" id="analyzeBtn" onclick="analyzeFile()">
+    Analyze My Finances
+</button>
+            </div>
 
-            <input
-                type="number"
-                id="debt"
-                placeholder="Enter your monthly debt payment"
-                required
-            >
+            <p id="status"></p>
+
+        </section>
 
 
-            <button type="submit">
-                Analyze Financial Risk
-            </button>
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="dashboard hidden">
 
-        </form>
+            <h2>📊 Financial Dashboard</h2>
 
 
-        <div id="result"></div>
+            <!-- KPI CARDS -->
+            <div class="cards">
 
-    </div>
+                <div class="card">
+                    <h3>💵 Total Income</h3>
+                    <p id="totalIncome">₹0</p>
+                </div>
+
+                <div class="card">
+                    <h3>💸 Total Expenses</h3>
+                    <p id="totalExpense">₹0</p>
+                </div>
+
+                <div class="card">
+                    <h3>💰 Total Savings</h3>
+                    <p id="totalSavings">₹0</p>
+                </div>
+
+                <div class="card risk-card">
+                    <h3>❤️ Financial Health</h3>
+                    <p id="healthScore">0 / 100</p>
+                    <span id="healthStatus">-</span>
+                </div>
+
+            </div>
+
+
+            <!-- FINANCIAL HEALTH -->
+            <section class="panel">
+
+                <h2>❤️ Financial Health</h2>
+
+                <div class="health-grid">
+
+                    <div>
+                        <strong>Risk Level</strong>
+                        <p id="riskLevel">-</p>
+                    </div>
+
+                    <div>
+                        <strong>Expense Ratio</strong>
+                        <p id="expenseRatio">0%</p>
+                    </div>
+
+                    <div>
+                        <strong>Savings Rate</strong>
+                        <p id="savingsRate">0%</p>
+                    </div>
+
+                    <div>
+                        <strong>Anomaly Rate</strong>
+                        <p id="anomalyRate">0%</p>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CATEGORY SPENDING -->
+            <section class="panel">
+
+                <h2>🛒 Spending by Category</h2>
+
+                <div id="categoryChart" class="category-chart"></div>
+
+            </section>
+            <section class="panel">
+    <h2>📈 Monthly Spending Trend</h2>
+    <div id="monthlyChart" class="monthly-chart"></div>
+</section>
+
+
+            <!-- PREDICTION -->
+            <section class="panel prediction-panel">
+
+                <h2>🔮 Next Month Expense Prediction</h2>
+
+                <div class="prediction-value">
+                    ₹<span id="nextMonthExpense">0</span>
+                </div>
+
+                <p>
+                    Best performing model:
+                    <strong id="bestModel">-</strong>
+                </p>
+
+            </section>
+
+
+            <!-- ANOMALIES -->
+            <section class="panel">
+
+                <h2>⚠️ Unusual Transactions</h2>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="anomalyTable">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- RECOMMENDATIONS -->
+            <section class="panel">
+
+                <h2>💡 Smart Recommendations</h2>
+
+                <ul id="recommendations">
+                </ul>
+
+            </section>
+
+
+            <!-- MODEL COMPARISON -->
+            <section class="panel">
+
+                <h2>🤖 ML Model Comparison</h2>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Model</th>
+                                <th>MAE</th>
+                                <th>RMSE</th>
+                                <th>R²</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="modelTable">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+        <p>Smart Expense & Financial Risk Analyzer</p>
+    </footer>
 
 
     <script src="script.js"></script>
