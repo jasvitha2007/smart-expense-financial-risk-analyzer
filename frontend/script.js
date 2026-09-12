@@ -264,6 +264,9 @@ function showDashboard(data) {
     showCategories(
         data.category_expenses
     );
+    showMonthlyChart(
+    data.monthly_expenses
+);
 
 
     // ====================================
@@ -425,6 +428,81 @@ function showCategories(categories) {
                         class="bar-fill"
                         style="width:${percentage}%"
                     ></div>
+                </div>
+            `;
+
+            chart.appendChild(row);
+
+        }
+    );
+}
+// ========================================
+// MONTHLY SPENDING TREND
+// ========================================
+
+function showMonthlyChart(monthlyExpenses) {
+
+    const chart =
+        document.getElementById(
+            "monthlyChart"
+        );
+
+    chart.innerHTML = "";
+
+    if (
+        !monthlyExpenses ||
+        monthlyExpenses.length === 0
+    ) {
+
+        chart.textContent =
+            "No monthly spending data available.";
+
+        return;
+    }
+
+    const maxAmount =
+        Math.max(
+            ...monthlyExpenses.map(
+                item => Number(item.amount)
+            )
+        );
+
+    monthlyExpenses.forEach(
+        function (item) {
+
+            const percentage =
+                maxAmount > 0
+                    ? (Number(item.amount) / maxAmount) * 100
+                    : 0;
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+            row.className =
+                "monthly-row";
+
+            row.innerHTML = `
+                <div class="monthly-header">
+
+                    <span>
+                        ${item.month}
+                    </span>
+
+                    <strong>
+                        ${formatCurrency(item.amount)}
+                    </strong>
+
+                </div>
+
+                <div class="monthly-bar">
+
+                    <div
+                        class="monthly-bar-fill"
+                        style="width:${percentage}%"
+                    ></div>
+
                 </div>
             `;
 
