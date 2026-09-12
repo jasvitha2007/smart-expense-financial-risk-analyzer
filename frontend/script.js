@@ -218,6 +218,24 @@ function showDashboard(data) {
 
     const health =
         data.financial_health;
+        const riskExplanation =
+    document.getElementById("riskExplanation");
+
+if (health.status === "Low Risk") {
+
+    riskExplanation.textContent =
+        "🟢 Your finances are healthy with a positive savings pattern.";
+
+} else if (health.status === "Medium Risk") {
+
+    riskExplanation.textContent =
+        "🟡 Your finances need attention. Consider reducing unnecessary expenses.";
+
+} else {
+
+    riskExplanation.textContent =
+        "🔴 Your expenses are higher than your income, resulting in a negative savings rate and high financial risk.";
+}
 
     document.getElementById(
         "healthScore"
@@ -230,10 +248,21 @@ function showDashboard(data) {
     ).textContent =
         health.health_status;
 
-    document.getElementById(
-        "riskLevel"
-    ).textContent =
-        health.risk_level;
+    const riskLevel =
+    document.getElementById("riskLevel");
+
+riskLevel.textContent =
+    health.risk_level;
+
+riskLevel.className = "";
+
+if (health.risk_level === "Low Risk") {
+    riskLevel.classList.add("risk-low");
+} else if (health.risk_level === "Medium Risk") {
+    riskLevel.classList.add("risk-medium");
+} else {
+    riskLevel.classList.add("risk-high");
+}
 
     document.getElementById(
         "expenseRatio"
@@ -264,6 +293,19 @@ function showDashboard(data) {
     showCategories(
         data.category_expenses
     );
+    const categoryExpenses =
+    data.category_expenses;
+
+    Object.entries(categoryExpenses)
+        .sort((a, b) => b[1] - a[1])[0];
+
+document.getElementById(
+    "topCategoryInsight"
+).textContent =
+    `⚠️ Highest spending category: ${topCategory[0]} — ₹${topCategory[1].toLocaleString("en-IN", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    })}`;
     showMonthlyChart(
     data.monthly_expenses
 );
@@ -284,6 +326,10 @@ function showDashboard(data) {
         "bestModel"
     ).textContent =
         data.prediction.best_model;
+        document.getElementById(
+    "bestModelHighlight"
+).textContent =
+    data.prediction.best_model;
 
 
     // ====================================
@@ -330,6 +376,7 @@ function showDashboard(data) {
     showModels(
         data.prediction.model_comparison
     );
+    
 
 
     console.log(
@@ -623,4 +670,73 @@ function showModels(models) {
 
         }
     );
+}
+// =========================
+// DOWNLOAD REPORT
+// =========================
+
+function downloadReport() {
+
+    console.log("DOWNLOAD BUTTON CLICKED");
+
+    const dashboard =
+        document.querySelector(".dashboard");
+
+    if (!dashboard) {
+        alert("Dashboard not found!");
+        return;
+    }
+
+    const report =
+        dashboard.innerText;
+
+    const blob =
+        new Blob(
+            [report],
+            { type: "text/plain" }
+        );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+    link.download =
+        "Smart_Expense_Financial_Report.txt";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+}
+// =========================
+// RESET DASHBOARD
+// =========================
+
+function resetDashboard() {
+
+    // Clear selected file
+    document.getElementById("csvFile").value = "";
+
+    // Hide dashboard
+    document
+        .getElementById("dashboard")
+        .classList.add("hidden");
+
+    // Clear status message
+    document.getElementById("status").textContent = "";
+
+    // Clear charts and tables
+    document.getElementById("categoryChart").innerHTML = "";
+    document.getElementById("monthlyChart").innerHTML = "";
+    document.getElementById("anomalyTable").innerHTML = "";
+    document.getElementById("modelTable").innerHTML = "";
+    document.getElementById("recommendations").innerHTML = "";
+
+    console.log("Dashboard reset successfully");
 }

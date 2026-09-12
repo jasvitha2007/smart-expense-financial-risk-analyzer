@@ -3,7 +3,7 @@ import tempfile
 
 from fastapi import APIRouter, UploadFile, File
 
-from services.prediction_service import analyze_csv
+from backend.services.prediction_service import analyze_csv
 
 
 router = APIRouter()

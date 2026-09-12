@@ -389,3 +389,132 @@ footer {
     border-radius: 20px;
     transition: width 0.5s ease;
 }
+/* =========================
+   ANOMALY TABLE SCROLL
+========================= */
+
+.table-container {
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+.table-container table {
+    min-width: 700px;
+}
+
+.table-container thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+/* =========================
+   ANOMALY TABLE POLISH
+========================= */
+
+#anomalyTable tr:hover {
+    background: #f3f6ff;
+}
+
+#anomalyTable td:last-child {
+    font-weight: 700;
+}
+
+#anomalyTable td:nth-child(3) {
+    font-weight: 600;
+}
+/* =========================
+   DOWNLOAD REPORT BUTTON
+========================= */
+
+.download-btn {
+    margin-top: 15px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.download-btn:hover {
+    background: #1d4ed8;
+}
+/* =========================
+   PROJECT FOOTER
+========================= */
+
+.project-footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 25px 15px;
+    border-top: 1px solid #e5e7eb;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.project-footer p:first-child {
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 5px;
+}
+/* =========================
+   BEST MODEL HIGHLIGHT
+========================= */
+
+.best-model-box {
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    background: #eef2ff;
+    border-left: 5px solid #2563eb;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.best-model-box strong {
+    margin-left: 5px;
+    color: #1d4ed8;
+}
+/* =========================
+   PREDICTION NOTE
+========================= */
+
+.prediction-note {
+    margin-top: 10px;
+    color: #6b7280;
+    font-size: 14px;
+    font-style: italic;
+}
+/* =========================
+   RISK EXPLANATION
+========================= */
+
+.risk-explanation {
+    margin-top: 15px;
+    padding: 12px 15px;
+    background: #fff7ed;
+    border-left: 4px solid #f97316;
+    border-radius: 6px;
+    color: #9a3412;
+    font-size: 14px;
+    line-height: 1.5;
+}
+/* =========================
+   RISK LEVEL COLORS
+========================= */
+
+.risk-low {
+    color: #15803d;
+    font-weight: 700;
+}
+
+.risk-medium {
+    color: #b45309;
+    font-weight: 700;
+}
+
+.risk-high {
+    color: #dc2626;
+    font-weight: 700;
+}

@@ -82,6 +82,20 @@
                 </div>
 
             </div>
+            <button
+    type="button"
+    id="downloadReportBtn"
+    class="download-btn"
+    onclick="downloadReport()">
+    📥 Download Report
+</button>
+<button
+    type="button"
+    id="resetBtn"
+    class="reset-btn"
+    onclick="resetDashboard()">
+    🔄 Reset Dashboard
+</button>
 
 
             <!-- FINANCIAL HEALTH -->
@@ -106,10 +120,12 @@
                         <p id="savingsRate">0%</p>
                     </div>
 
+
                     <div>
                         <strong>Anomaly Rate</strong>
                         <p id="anomalyRate">0%</p>
                     </div>
+                    <p id="riskExplanation" class="risk-explanation"></p>
 
                 </div>
 
@@ -120,7 +136,7 @@
             <section class="panel">
 
                 <h2>🛒 Spending by Category</h2>
-
+ <p id="topCategoryInsight" class="top-category-insight"></p>
                 <div id="categoryChart" class="category-chart"></div>
 
             </section>
@@ -138,6 +154,9 @@
                 <div class="prediction-value">
                     ₹<span id="nextMonthExpense">0</span>
                 </div>
+                <p class="prediction-note">
+    📊 Estimated expense for the next month based on historical spending patterns.
+</p>
 
                 <p>
                     Best performing model:
@@ -149,31 +168,24 @@
 
             <!-- ANOMALIES -->
             <section class="panel">
+    <h2>⚠️ Unusual Transactions</h2>
 
-                <h2>⚠️ Unusual Transactions</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
 
-                <div class="table-container">
-
-                    <table>
-
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Description</th>
-                                <th>Category</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-
-                        <tbody id="anomalyTable">
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </section>
-
+            <tbody id="anomalyTable">
+            </tbody>
+        </table>
+    </div>
+</section>
 
             <!-- RECOMMENDATIONS -->
             <section class="panel">
@@ -190,7 +202,10 @@
             <section class="panel">
 
                 <h2>🤖 ML Model Comparison</h2>
-
+<div class="best-model-box">
+    🏆 Best Model:
+    <strong id="bestModelHighlight">-</strong>
+</div>
                 <div class="table-container">
 
                     <table>
@@ -224,7 +239,10 @@
 
 
     <script src="script.js"></script>
-
+<footer class="project-footer">
+    <p>Smart Expense & Financial Risk Analyzer</p>
+    <p>AI-powered personal finance analysis and risk prediction</p>
+</footer>
 </body>
 
 </html>
