@@ -5,3 +5,4 @@ __pycache__/
 __pycache__/
 *.pyc
 venv/
+uploaded_finance.csv
